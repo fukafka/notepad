@@ -64,6 +64,20 @@ NotePad/
 └── app/src/androidTest/java/...      仪器测试
 ```
 
+## 扩展功能实现对照
+
+| 扩展功能 | 交互入口 | 关键实现 | 代码位置 |
+|---|---|---|---|
+| 分类 | 列表顶部 Chip，`+` 新增 | `categories` 表 + `notes.category` 存名称 | `NotesList.rebuildChips / showNewCategoryDialog`，`NotePadProvider.insertCategory` |
+| 收藏 | 长按菜单；「收藏」Chip 筛选 | `is_favorite` 置 1，卡片显示 ★ | `NotesList.toggleFavorite`，`NoteListAdapter` |
+| 最近删除 | 菜单进入回收站；长按恢复 / 彻底删除 | `deleted_at` 软删除，正常列表过滤 `deleted_at = 0` | `NotesList.showTrashMenu / moveToTrash / restoreNote` |
+| 待办 | 编辑页待办开关；卡片左侧复选框 | `is_todo` / `is_done`，完成后标题加删除线 | `NoteEditor`，`NoteListAdapter` |
+| 置顶 | 长按菜单「置顶 / 取消置顶」 | `pinned` 列 + 默认排序 `pinned DESC, modified DESC` | `NotesList.togglePinned`，`NotePad` |
+| 搜索高亮 | 搜索框输入即时生效 | `SpannableString` + `ForegroundColorSpan` + `StyleSpan` | `NoteListAdapter.highlight` |
+| 主题 | 设置页：深浅色 + 5 套主题色 | `Theme.Material3.DayNight.NoActionBar` + `values-night` | `ThemePrefs`，`themes.xml`，`NotePadApp` |
+| 导出与恢复 | 设置页，SAF 选择文件 | JSON 序列化，恢复时按标题与创建时间去重 | `BackupManager` |
+| 粘贴新建 | 列表菜单 | 剪贴板在列表页读取（Android 10 起后台读不到） | `NotesList.pasteFromClipboard` |
+
 ## 数据库
 
 数据库版本 **6**，两张表。
@@ -143,6 +157,16 @@ NoteEditor.onPause
           → Adapter 重新绑定 → 列表刷新
 ```
 
+## 关键实现细节
+
+**草稿式新建**：新建笔记不立即写库，编辑器内用内存 `MatrixCursor` 占位；`onPause` 且内容非空时才 `insert`，避免空笔记进入列表。
+
+**搜索高亮**：Adapter 保存当前关键词，绑定卡片时在标题与摘要中查找全部命中，用主题色 `ForegroundColorSpan` 与加粗 `StyleSpan` 标注；清空搜索后恢复原文。
+
+**置顶排序**：`pinned` 是独立列，默认排序 `pinned DESC, modified DESC`；置顶不改变筛选条件，只让笔记在结果内前置。
+
+**数据库迁移**：`onUpgrade` 按 `oldVersion` 逐版本 `ALTER TABLE ADD COLUMN`，不重建表，升级后旧笔记保留。
+
 ## 已知限制
 
 - 分类只支持新增，不支持重命名与删除（`category` 存的是名称字符串）
@@ -153,4 +177,4 @@ NoteEditor.onPause
 
 ## 说明
 
-本项目以 Google NotePad 示例为起点做扩展，保留了 `ContentProvider + SQLite` 的数据访问方式与原有 URI 契约；UI、筛选、主题、备份等均为后续实现。
+本项目以 Google NotePad 示例为起点做扩展，保留了 `ContentProvider + SQLite` 的数据访问方式与原有 URI 契约；除示例骨架外，本文档所列的界面、筛选、置顶、搜索高亮、主题、备份与数据库迁移均为自行设计与实现。
