@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Material3 日间/夜间主题：跟随系统深浅色，列表与编辑器的配色都从这里取 -->
+    <style name="Theme.NotePad" parent="Theme.Material3.DayNight.NoActionBar" />
+
+    <!-- 主题色变体：只覆盖强调色，深浅色仍由 DayNight 控制 -->
+    <style name="Theme.NotePad.Indigo" parent="Theme.NotePad">
+        <item name="colorPrimary">@color/accent_indigo</item>
+        <item name="colorOnPrimary">@color/on_accent_indigo</item>
+        <item name="colorPrimaryContainer">@color/accent_indigo_container</item>
+        <item name="colorOnPrimaryContainer">@color/on_accent_indigo_container</item>
+        <item name="colorSecondaryContainer">@color/accent_indigo_soft</item>
+        <item name="colorOnSecondaryContainer">@color/on_accent_indigo_soft</item>
+    </style>
+
+    <style name="Theme.NotePad.Teal" parent="Theme.NotePad">
+        <item name="colorPrimary">@color/accent_teal</item>
+        <item name="colorOnPrimary">@color/on_accent_teal</item>
+        <item name="colorPrimaryContainer">@color/accent_teal_container</item>
+        <item name="colorOnPrimaryContainer">@color/on_accent_teal_container</item>
+        <item name="colorSecondaryContainer">@color/accent_teal_soft</item>
+        <item name="colorOnSecondaryContainer">@color/on_accent_teal_soft</item>
+    </style>
+
+    <style name="Theme.NotePad.Orange" parent="Theme.NotePad">
+        <item name="colorPrimary">@color/accent_orange</item>
+        <item name="colorOnPrimary">@color/on_accent_orange</item>
+        <item name="colorPrimaryContainer">@color/accent_orange_container</item>
+        <item name="colorOnPrimaryContainer">@color/on_accent_orange_container</item>
+        <item name="colorSecondaryContainer">@color/accent_orange_soft</item>
+        <item name="colorOnSecondaryContainer">@color/on_accent_orange_soft</item>
+    </style>
+
+    <style name="Theme.NotePad.Rose" parent="Theme.NotePad">
+        <item name="colorPrimary">@color/accent_rose</item>
+        <item name="colorOnPrimary">@color/on_accent_rose</item>
+        <item name="colorPrimaryContainer">@color/accent_rose_container</item>
+        <item name="colorOnPrimaryContainer">@color/on_accent_rose_container</item>
+        <item name="colorSecondaryContainer">@color/accent_rose_soft</item>
+        <item name="colorOnSecondaryContainer">@color/on_accent_rose_soft</item>
+    </style>
+
+    <!-- 标题编辑沿用对话框形态，但配色跟随 Material3 深浅色 -->
+    <style name="Theme.NotePad.Dialog" parent="Theme.Material3.DayNight.Dialog" />
+</resources>

@@ -4,6 +4,10 @@
           android:title="@string/menu_open" />
     <item android:id="@+id/context_copy"
           android:title="@string/menu_copy" />
+    <item android:id="@+id/context_favorite"
+          android:title="@string/menu_favorite" />
+    <item android:id="@+id/context_pin"
+          android:title="@string/menu_pin" />
     <item android:id="@+id/context_delete"
           android:title="@string/menu_delete" />
 </menu>
