@@ -1,6 +1,6 @@
 # NotePad 记事本
 
-基于 Google 早期 NotePad 示例（ContentProvider + SQLite）扩展的 Android 记事本，保留原示例的数据访问骨架，在其上完成了时间戳、搜索、分类、收藏、回收站、待办、主题与备份等功能。
+基于 Google 早期 NotePad 示例（ContentProvider + SQLite）扩展的 Android 记事本，保留原示例的数据访问骨架，在其上完成了时间戳、搜索、分类、收藏、回收站、待办、置顶、主题与备份等功能。
 
 ## 功能
 
@@ -8,6 +8,7 @@
 
 - 列表条目显示时间戳：今天 / 昨天 / 日期（`TimeFormatter`）
 - 按标题或正文搜索，条件为 `(title LIKE ? OR note LIKE ?)`
+- 搜索命中的关键词在标题与摘要中高亮显示（`SpannableString` + `ForegroundColorSpan`）
 
 **扩展功能**
 
@@ -17,6 +18,7 @@
 | 收藏 | 长按收藏，卡片显示 ★，可用「收藏」Chip 筛选 |
 | 最近删除 | 软删除进入回收站，支持恢复、彻底删除、清空 |
 | 待办 | 卡片左侧复选框，勾选后标题加删除线，「待办」Chip 筛选 |
+| 置顶 | 长按「置顶」，卡片显示置顶标签，排序按 `pinned DESC, modified DESC` |
 | 主题 | 跟随系统 / 浅色 / 深色，另有 5 套主题色 |
 | 导出与恢复 | JSON 文件，SAF 选择路径，无需存储权限，恢复时自动去重 |
 | 粘贴新建 | 从剪贴板内容创建笔记 |
@@ -45,14 +47,14 @@
 NotePad/
 ├── app/src/main/
 │   ├── AndroidManifest.xml
-│   ├── java/com/example/android/notepad/
+│   ├── java/com/notepad/app/
 │   │   ├── NotePad.java              数据契约：表名、列名、URI、MIME
 │   │   ├── NotePadProvider.java      数据入口：路由 + 增删改查 + 迁移
 │   │   ├── NotePadApp.java           启动时应用主题
 │   │   ├── NotesList.java            列表、搜索、筛选、回收站
 │   │   ├── NoteEditor.java           编辑、草稿、分类、收藏
 │   │   ├── TitleEditor.java          标题编辑对话框
-│   │   ├── NoteListAdapter.java      Cursor → 卡片
+│   │   ├── NoteListAdapter.java      Cursor → 卡片，含关键词高亮
 │   │   ├── SettingsActivity.java     主题、主题色、备份
 │   │   ├── BackupManager.java        JSON 导出与恢复
 │   │   ├── ThemePrefs.java           主题偏好
@@ -64,7 +66,7 @@ NotePad/
 
 ## 数据库
 
-数据库版本 **5**，两张表。
+数据库版本 **6**，两张表。
 
 **notes**
 
@@ -80,10 +82,11 @@ NotePad/
 | `deleted_at` | INTEGER | 软删除时间，0 表示未删除 |
 | `is_todo` | INTEGER | 是否待办 |
 | `is_done` | INTEGER | 待办是否完成 |
+| `pinned` | INTEGER | 置顶标记，1 时排在列表最前 |
 
 **categories**：`_id`、`name`（唯一）、`sort_order`
 
-版本升级采用 `ALTER TABLE` 增量迁移，不清空旧数据：v3 加分类/收藏/软删除，v4 建分类表，v5 加待办字段。
+版本升级采用 `ALTER TABLE` 增量迁移，不清空旧数据：v3 加分类/收藏/软删除，v4 建分类表，v5 加待办字段，v6 加置顶字段。
 
 URI 契约保持不变：
 
@@ -144,6 +147,7 @@ NoteEditor.onPause
 
 - 分类只支持新增，不支持重命名与删除（`category` 存的是名称字符串）
 - 搜索没有做防抖，每次输入都会查询
+- 置顶只在默认排序下生效，按分类或收藏筛选时同样排在组内最前
 - 回收站没有自动清理机制，需要手动清空
 - 编辑器首次读取笔记在主线程（原示例遗留）
 
