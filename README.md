@@ -19,6 +19,7 @@
 | 最近删除 | 软删除进入回收站，支持恢复、彻底删除、清空 |
 | 待办 | 卡片左侧复选框，勾选后标题加删除线，「待办」Chip 筛选 |
 | 置顶 | 长按「置顶」，卡片显示置顶标签，排序按 `pinned DESC, modified DESC` |
+| 排序方式 | 工具栏菜单切换：修改时间 / 创建时间 / 标题，置顶始终排在最前 |
 | 主题 | 跟随系统 / 浅色 / 深色，另有 5 套主题色 |
 | 导出与恢复 | JSON 文件，SAF 选择路径，无需存储权限，恢复时自动去重 |
 | 粘贴新建 | 从剪贴板内容创建笔记 |
@@ -73,6 +74,7 @@ NotePad/
 | 最近删除 | 菜单进入回收站；长按恢复 / 彻底删除 | `deleted_at` 软删除，正常列表过滤 `deleted_at = 0` | `NotesList.showTrashMenu / moveToTrash / restoreNote` |
 | 待办 | 编辑页待办开关；卡片左侧复选框 | `is_todo` / `is_done`，完成后标题加删除线 | `NoteEditor`，`NoteListAdapter` |
 | 置顶 | 长按菜单「置顶 / 取消置顶」 | `pinned` 列 + 默认排序 `pinned DESC, modified DESC` | `NotesList.togglePinned`，`NotePad` |
+| 排序方式 | 工具栏「排序方式」 | 按偏好拼接 `sortOrder`，置顶列始终排第一 | `NotesList.currentSortOrder / showSortDialog` |
 | 搜索高亮 | 搜索框输入即时生效 | `SpannableString` + `ForegroundColorSpan` + `StyleSpan` | `NoteListAdapter.highlight` |
 | 主题 | 设置页：深浅色 + 5 套主题色 | `Theme.Material3.DayNight.NoActionBar` + `values-night` | `ThemePrefs`，`themes.xml`，`NotePadApp` |
 | 导出与恢复 | 设置页，SAF 选择文件 | JSON 序列化，恢复时按标题与创建时间去重 | `BackupManager` |
@@ -163,7 +165,7 @@ NoteEditor.onPause
 
 **搜索高亮**：Adapter 保存当前关键词，绑定卡片时在标题与摘要中查找全部命中，用主题色 `ForegroundColorSpan` 与加粗 `StyleSpan` 标注；清空搜索后恢复原文。
 
-**置顶排序**：`pinned` 是独立列，默认排序 `pinned DESC, modified DESC`；置顶不改变筛选条件，只让笔记在结果内前置。
+**置顶排序**：`pinned` 是独立列，默认排序 `pinned DESC, modified DESC`；置顶不改变筛选条件，只让笔记在结果内前置。工具栏的「排序方式」可在修改时间、创建时间、标题之间切换，无论选哪种，置顶始终排在最前。
 
 **数据库迁移**：`onUpgrade` 按 `oldVersion` 逐版本 `ALTER TABLE ADD COLUMN`，不重建表，升级后旧笔记保留。
 
