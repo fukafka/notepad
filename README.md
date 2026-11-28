@@ -26,13 +26,17 @@
 
 ## 截图
 
-| 列表 | 深色模式 |
+| 列表（含置顶标签） | 搜索关键词高亮 |
 |---|---|
-| ![列表](docs/list.png) | ![深色](docs/list_dark.png) |
+| ![列表](docs/list.png) | ![搜索](docs/search.png) |
 
-| 设置（主题与备份） | 待办完成态 |
+| 排序方式 | 最近删除（回收站） |
 |---|---|
-| ![设置](docs/settings.png) | ![待办](docs/todo.png) |
+| ![排序](docs/sort.png) | ![回收站](docs/trash.png) |
+
+| 深色模式 | 设置（主题与备份） |
+|---|---|
+| ![深色](docs/list_dark.png) | ![设置](docs/settings.png) |
 
 ## 技术栈
 
