@@ -54,6 +54,10 @@
     <string name="menu_pin">置顶</string>
     <string name="menu_unpin">取消置顶</string>
     <string name="tag_pinned">置顶</string>
+    <string name="menu_sort">排序方式</string>
+    <string name="sort_modified">按修改时间</string>
+    <string name="sort_created">按创建时间</string>
+    <string name="sort_title">按标题</string>
     <string name="menu_trash">最近删除</string>
     <string name="menu_empty_trash">清空回收站</string>
     <string name="title_trash">最近删除</string>

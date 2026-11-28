@@ -14,6 +14,9 @@
           android:title="@string/menu_paste"
           android:alphabeticShortcut="p"
           app:showAsAction="never" />
+    <item android:id="@+id/menu_sort"
+          android:title="@string/menu_sort"
+          app:showAsAction="never" />
     <item android:id="@+id/menu_trash"
           android:title="@string/menu_trash"
           app:showAsAction="never" />

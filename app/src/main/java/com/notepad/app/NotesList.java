@@ -54,6 +54,11 @@ public class NotesList extends AppCompatActivity
     private static final int LOADER_NOTES = 1;
     private static final int LOADER_CATEGORIES = 2;
 
+    private static final int SORT_MODIFIED = 0;
+    private static final int SORT_CREATED = 1;
+    private static final int SORT_TITLE = 2;
+    private static final String PREF_SORT = "sort_mode";
+
     private NoteListAdapter adapter;
     private RecyclerView noteListView;
     private View emptyView;
@@ -69,6 +74,7 @@ public class NotesList extends AppCompatActivity
     private boolean todoOnly;
     private String selectedCategory;
     private String keyword = "";
+    private int sortMode;
 
     private int appliedColor;
 
@@ -81,6 +87,7 @@ public class NotesList extends AppCompatActivity
         setContentView(R.layout.activity_notes_list);
 
         trashMode = getIntent().getBooleanExtra(EXTRA_TRASH, false);
+        sortMode = getPreferences(MODE_PRIVATE).getInt(PREF_SORT, SORT_MODIFIED);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -176,6 +183,42 @@ public class NotesList extends AppCompatActivity
     // 条件变化后重新加载列表
     private void reloadNotes() {
         getSupportLoaderManager().restartLoader(LOADER_NOTES, null, this);
+    }
+
+    // 当前排序：置顶始终前置，其余按所选字段排
+    private String currentSortOrder() {
+        String pinnedFirst = NotePad.Notes.COLUMN_NAME_PINNED + " DESC, ";
+        switch (sortMode) {
+            case SORT_CREATED:
+                return pinnedFirst + NotePad.Notes.COLUMN_NAME_CREATE_DATE + " DESC";
+            case SORT_TITLE:
+                return pinnedFirst + NotePad.Notes.COLUMN_NAME_TITLE + " COLLATE NOCASE ASC";
+            default:
+                return NotePad.Notes.DEFAULT_SORT_ORDER;
+        }
+    }
+
+    // 选择排序方式，选择结果记在本页偏好里
+    private void showSortDialog() {
+        String[] options = {
+                getString(R.string.sort_modified),
+                getString(R.string.sort_created),
+                getString(R.string.sort_title)
+        };
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.menu_sort)
+                .setSingleChoiceItems(options, sortMode, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        sortMode = which;
+                        getPreferences(MODE_PRIVATE).edit()
+                                .putInt(PREF_SORT, sortMode)
+                                .apply();
+                        reloadNotes();
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
     private final LoaderManager.LoaderCallbacks<Cursor> categoryCallbacks =
@@ -385,7 +428,7 @@ public class NotesList extends AppCompatActivity
         String selection = TextUtils.join(" AND ", clauses);
         String sortOrder = trashMode
                 ? NotePad.Notes.COLUMN_NAME_DELETED_AT + " DESC"
-                : NotePad.Notes.DEFAULT_SORT_ORDER;
+                : currentSortOrder();
 
         return new CursorLoader(
                 this,
@@ -685,6 +728,9 @@ public class NotesList extends AppCompatActivity
             return true;
         } else if (itemId == R.id.menu_paste) {
             pasteFromClipboard();
+            return true;
+        } else if (itemId == R.id.menu_sort) {
+            showSortDialog();
             return true;
         } else if (itemId == R.id.menu_trash) {
             startActivity(new Intent(this, NotesList.class).putExtra(EXTRA_TRASH, true));
