@@ -93,6 +93,7 @@ public class NotesList extends AppCompatActivity
         setSupportActionBar(toolbar);
         if (trashMode && getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.title_trash);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
         noteListView = findViewById(R.id.notes_list);
@@ -719,6 +720,10 @@ public class NotesList extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
+        if (itemId == android.R.id.home) {
+            finish();
+            return true;
+        }
         if (itemId == R.id.menu_add) {
             startActivity(new Intent(Intent.ACTION_INSERT, NotePad.Notes.CONTENT_URI));
             return true;
