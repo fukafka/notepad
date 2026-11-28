@@ -159,7 +159,7 @@ NoteEditor.onPause
 
 ## 关键实现细节
 
-**草稿式新建**：新建笔记不立即写库，编辑器内用内存 `MatrixCursor` 占位；`onPause` 且内容非空时才 `insert`，避免空笔记进入列表。
+**草稿式新建**：新建笔记不立即写库，编辑器内用内存 `MatrixCursor` 占位；离开编辑器（`onPause`）时才 `insert`，空草稿不会提前出现在列表里。
 
 **搜索高亮**：Adapter 保存当前关键词，绑定卡片时在标题与摘要中查找全部命中，用主题色 `ForegroundColorSpan` 与加粗 `StyleSpan` 标注；清空搜索后恢复原文。
 
