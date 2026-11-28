@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 新建待办：清单勾选图标 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M3,4 h4 v4 h-4 z M9,5 h12 v2 h-12 z
+            M3,10 h4 v4 h-4 z M9,11 h12 v2 h-12 z
+            M3,16 h4 v4 h-4 z M9,17 h12 v2 h-12 z" />
+</vector>
